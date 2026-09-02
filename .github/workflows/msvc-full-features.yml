@@ -220,3 +220,15 @@ jobs:
       run: |
         echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
       shell: bash
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: CDDA-0.I-MSVC
+        path: |
+          **/*.exe
+          **/*.dll
+          data/
+          gfx/
+          lang/
+          sound/
+       
