@@ -193,12 +193,14 @@ jobs:
         echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
       shell: bash
     - name: Prepare Release Folder
+      shell: powershell
       run: |
        New-Item -ItemType Directory -Path release
+         New-Item -ItemType Directory -Path release
           Get-ChildItem -Path . -Recurse -Include *.exe, *.dll | Where-Object { $_.FullName -notlike "*\android\*" -and $_.FullName -notlike "*\tools\*" } | Copy-Item -Destination release/
           $folders = @('data', 'gfx', 'sound', 'doc', 'font', 'title')
           foreach ($f in $folders) { if (Test-Path $f) { Copy-Item -Recurse $f release/ } }
-          Copy-Item -Recurse lang release/ -Exclude mo -ErrorAction SilentlyContinue
+          if (Test-Path lang) { robocopy lang release/lang /E /XJ /XF *mo* /XF *.po /XD android /NDL /NFL /NJH /NJS || true }
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
