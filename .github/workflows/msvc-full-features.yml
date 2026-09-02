@@ -203,5 +203,5 @@ jobs:
           gfx/
           lang/
           sound/
-       
+        include-hidden-files: false
  
