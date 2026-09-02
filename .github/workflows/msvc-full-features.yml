@@ -195,12 +195,16 @@ jobs:
     - name: Prepare Release Folder
       shell: powershell
       run: |
-       New-Item -ItemType Directory -Path release
-         New-Item -ItemType Directory -Path release
-          Get-ChildItem -Path . -Recurse -Include *.exe, *.dll | Where-Object { $_.FullName -notlike "*\android\*" -and $_.FullName -notlike "*\tools\*" } | Copy-Item -Destination release/
+        New-Item -ItemType Directory -Path release -Force
+          Get-ChildItem -Path . -Recurse -Include *.exe, *.dll | Where-Object { $_.FullName -notlike "*\android\*" -and $_.FullName -notlike "*\tools\*" } | Copy-Item -Destination release/ -Force
           $folders = @('data', 'gfx', 'sound', 'doc', 'font', 'title')
-          foreach ($f in $folders) { if (Test-Path $f) { Copy-Item -Recurse $f release/ } }
-          if (Test-Path lang) { robocopy lang release/lang /E /XJ /XF *mo* /XF *.po /XD android /NDL /NFL /NJH /NJS || true }
+          foreach ($f in $folders) { 
+            if (Test-Path $f) { Copy-Item -Recurse -Path $f -Destination release/ -Force }
+          }
+          if (Test-Path lang) { 
+            robocopy lang release/lang /E /XJ /XD android /NDL /NFL /NJH /NJS
+            $global:LASTEXITCODE = 0
+          }
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
