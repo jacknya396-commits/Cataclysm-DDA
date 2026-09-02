@@ -197,11 +197,11 @@ jobs:
       with:
         name: CDDA-0.I-MSVC
         path: |
-          **/*.exe
-          **/*.dll
+          msvc-full-features/x64/Release/cataclysm-tiles.exe
           data/
           gfx/
           lang/
           sound/
-        include-hidden-files: false
+        if-no-files-found: warn
+        compression-level: 6
  
