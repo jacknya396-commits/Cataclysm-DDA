@@ -197,11 +197,12 @@ jobs:
       run: |
         $ErrorActionPreference = 'SilentlyContinue'
         New-Item -ItemType Directory -Path release -Force
-          Get-ChildItem -Path . -Recurse -Include *.exe, *.dll | Where-Object { $_.FullName -notlike "*\android\*" -and $_.FullName -notlike "*\tools\*" } | Copy-Item -Destination release/ -Force
-          $folders = @('data', 'gfx', 'sound', 'doc', 'font', 'title')
+          Get-ChildItem -Path . -MaxDepth 1 -Include cataclysm-tiles.exe, zzip.exe, json_formatter.exe | Copy-Item -Destination release/ -Force
+          $folders = @('data', 'gfx', 'sound', 'doc', 'font', 'title', 'mods')
           foreach ($f in $folders) { 
             if (Test-Path $f) { Copy-Item -Recurse -Path $f -Destination release/ -Force }
           }
+          Get-ChildItem -Path . -MaxDepth 1 -Include LICENSE*, README*, VERSION | Copy-Item -Destination release/ -Force
           if (Test-Path lang) { 
             Get-ChildItem -Path lang -Recurse | Where-Object { $_.FullName -notlike "*\android\*" -and $_.Attributes -notmatch "ReparsePoint" } | ForEach-Object {
               $target = $_.FullName.Replace((Get-Location).Path + "\lang", (Get-Location).Path + "\release\lang")
