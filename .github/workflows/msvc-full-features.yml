@@ -197,7 +197,14 @@ jobs:
       run: |
         $ErrorActionPreference = 'SilentlyContinue'
         New-Item -ItemType Directory -Path release -Force
-          Get-ChildItem -Path . -MaxDepth 1 -Include cataclysm-tiles.exe, zzip.exe, json_formatter.exe | Copy-Item -Destination release/ -Force
+          Get-ChildItem -Path . -Recurse -Include *.exe, *.dll | Where-Object {
+          $_.FullName -notlike "*\android\*" -and 
+          $_.FullName -notlike "*\tools\*" -and 
+          $_.Name -notlike "cl.exe" -and 
+          $_.Name -notlike "clang-cl.exe" -and 
+          $_.Name -notlike "ccache.exe" -and 
+          $_.Name -notlike "*test*" 
+        } | Copy-Item -Destination release/ -Force
           $folders = @('data', 'gfx', 'sound', 'doc', 'font', 'title', 'mods')
           foreach ($f in $folders) { 
             if (Test-Path $f) { Copy-Item -Recurse -Path $f -Destination release/ -Force }
